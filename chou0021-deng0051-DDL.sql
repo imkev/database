@@ -3,8 +3,8 @@
 -- Author  : Harpal Choudhary & Feiqiong Deng
 -- Comment : Assignment1-InventoryII-Tables with Constraints
 
-DROP VIEW IF EXISTS Cust_CAN_CHN_IND;
-DROP MATERIALIZED VIEW IF EXISTS Prod_Rus;
+DROP VIEW IF EXISTS Cust_CAN_CHN_IND_V;
+DROP MATERIALIZED VIEW IF EXISTS Prod_Rus_MV;
 
 DROP TABLE IF EXISTS Invoice_Line_T;
 DROP TABLE IF EXISTS Product_T;
@@ -28,7 +28,7 @@ CREATE TABLE City_T(
    Cntry_Code         CHAR(3),
    City_Population    BIGINT DEFAULT NULL,
    CONSTRAINT City_ID_PK PRIMARY KEY(City_ID),
-   CONSTRAINT Cntry_Code_FK FOREIGN KEY(Cntry_Code) REFERENCES Country_T(Cntry_Code)  
+   CONSTRAINT Cntry_Code_FK FOREIGN KEY(Cntry_Code) REFERENCES Country_T(Cntry_Code)
 );
 
 -- create customer table
@@ -44,7 +44,7 @@ CREATE TABLE Customer_T(
    cust_balance   numeric(9,2),
    cust_country   CHAR(3),  
    CONSTRAINT pk_customer PRIMARY KEY (cust_id),
-   CONSTRAINT fk_cust_country FOREIGN KEY (cust_country) REFERENCES Country_T(Cntry_Code)  
+   CONSTRAINT fk_cust_country FOREIGN KEY (cust_country) REFERENCES Country_T(Cntry_Code)
 );
 
 -- create invoice table
@@ -82,15 +82,13 @@ CREATE TABLE Invoice_Line_T(
 );
 
 -- create a dynamic view named as "Cust_CAN_CHN_IND" which  display all the customers from Canada, China and India.
-
-CREATE VIEW Cust_CAN_CHN_IND AS
-  select Cust_fname, cust_lname, cust_city, cust_country from customer_t 
+CREATE VIEW Cust_CAN_CHN_IND_V AS
+  select Cust_fname, cust_lname, cust_city, cust_country from Customer_T
   where cust_country in ('CAN', 'CHN', 'IND') order by cust_country;
 
 -- create a materialized view named as Prod_Rus that display all the prouducts made in Russia
-
-CREATE MATERIALIZED VIEW Prod_Rus AS 
-  Select Prod_Description, Prod_Code, Cntry_Origin from Product_t
+CREATE MATERIALIZED VIEW Prod_Rus_MV AS 
+  Select Prod_Description, Prod_Code, Cntry_Origin from Product_T
   where Cntry_Origin = 'RUS';
-
+  
 -- eof: InventoryII-DDL.sql
